@@ -4,11 +4,14 @@ interface TextInputProps {
   label: string;
   type?: string;
   name?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
 }
 
-export function TextInput({ label, type = "text", name, className }: TextInputProps) {
-  const [value, setValue] = useState("");
+export function TextInput({ label, value="", type = "text", name, className, onChange}: TextInputProps) {
+
+
 
   return (
     <div className={`relative w-full ${className}`}>
@@ -17,7 +20,7 @@ export function TextInput({ label, type = "text", name, className }: TextInputPr
         name={name}
         id={name}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={onChange}
         className="
           block w-full px-4 pt-6 pb-3 text-base text-gray-900
           bg-white border border-darkgrey-300 border-2 rounded-md

@@ -2,10 +2,22 @@ import { useState } from "react";
 import { TextInput } from "./TextInput";
 import AuthChoice from "./AuthChoice";
 import { Button } from "@/components/ui/button";
+import { signup, login } from "@/api/user";
 
 const AuthForm = () => {
     const [login_chosen, set_login_choice] = useState(true);
     const [signup_chosen, set_signup_choice] = useState(false);
+    const [loginData, set_loginData] = useState({
+        email: "",
+        password: "",
+    });
+    const [signupData, set_signupData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+    });
+
     const onClickLogin = (e: any) => {
         e.preventDefault();
         set_login_choice(true);
@@ -15,6 +27,25 @@ const AuthForm = () => {
         e.preventDefault();
         set_login_choice(false);
         set_signup_choice(true);
+    }
+
+    const onSubmitLogin = async (e: any) => {
+        e.preventDefault();
+        try {
+            const data = await login(loginData);
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    const onSubmitSignup = async (e: any) => {
+        e.preventDefault();
+        try {
+            const data = await signup(signupData);
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
     }
     
     return (
@@ -31,14 +62,14 @@ const AuthForm = () => {
             <div className="w-80 h-[3px] rounded-md bg-lightgrey mt-2"></div>
             {login_chosen && (
                 <>
-                <div className="w-90 mt-7">
-                <TextInput label="Email" name="email" className="mt-5"/>
+                <div className="w-85 mt-7">
+                <TextInput label="Email" value={loginData.email} name="email" className="mt-5" onChange={(e) => set_loginData({...loginData, email: e.target.value})}/>
                 </div>
-                <div className="w-90 mt-8">
-                    <TextInput label="Password" name="password" type="password" className="mt-8"/>
+                <div className="w-85 mt-8">
+                    <TextInput label="Password" value={loginData.password} name="password" type="password" className="mt-8" onChange={(e) => set_loginData({...loginData, password: e.target.value})}/>
                 </div>
                 <div className="mt-5">
-                    <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md mt-7" variant="default">
+                    <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md mt-7" variant="default" onClick={onSubmitLogin}>
                         Log in
                     </Button>
                 </div>
@@ -48,20 +79,20 @@ const AuthForm = () => {
                 <>
                 <div className="w-85 flex flex-row gap-3 mt-7">
                     <div>
-                        <TextInput label="First Name" name="firstName" className="mt-5"/>
+                        <TextInput label="First Name" value={signupData.firstName} name="firstName" className="mt-5" onChange={(e) => set_signupData({...signupData, firstName: e.target.value})}/>
                     </div>
                     <div>
-                        <TextInput label="Last Name" name="lastName" className="mt-5"/>
+                        <TextInput label="Last Name" value={signupData.lastName} name="lastName" className="mt-5" onChange={(e) => set_signupData({...signupData, lastName: e.target.value})}/>
                     </div>
                 </div>
                 <div className="w-85 mt-7">
-                    <TextInput label="Email" name="email"/>
+                    <TextInput value={signupData.email} label="Email" name="email" onChange={(e) => set_signupData({...signupData, email: e.target.value})}/>
                 </div>
                 <div className="w-85 mt-7">
-                    <TextInput label="Password" name="password" type="password"/>
+                    <TextInput value={signupData.password} label="Password" name="password" type="password" onChange={(e) => set_signupData({...signupData, password: e.target.value})}/>
                 </div>
                 <div className="mt-7">
-                    <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md" variant="default">
+                    <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md" variant="default" onClick={onSubmitSignup}>
                         Sign Up
                     </Button>
                 </div>
