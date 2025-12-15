@@ -6,17 +6,7 @@ export const getPresignedUrl = async (data: {
     contentType: string,
 }) => {
     try {
-        const auth_token = "auth_token"; // should replace this with the auth token after logging in. need
-                                        // to figure out where im storing that token after logging in and then 
-                                        // retrieving it here
-        const response = await axios.post(`${SERVER_URL}/image/presigned`, 
-            data,
-            {
-                headers: {
-                    "Authorization" : `Bearer ${auth_token}`,
-                },
-            }
-        );
+        const response = await axios.post(`${SERVER_URL}/image/presigned`, data);
         const {uploadUrl, key} = response.data;
         return {uploadUrl, key};
     } catch (error) {
@@ -38,17 +28,7 @@ export const uploadToS3 = async (uploadUrl: string, file: File, contentType: str
 
 export const getViewUrl = async (key: string) => {
     try {
-        const auth_token = "auth_token"; // should replace this with the auth token after logging in. need
-        // to figure out where im storing that token after logging in and then 
-        // retrieving it here
-        const response = await axios.post(`${SERVER_URL}/image/signed`,
-            { key },
-            {
-                headers: {
-                    "Authorization": `Bearer ${auth_token}`,
-                }
-            }
-        );
+        const response = await axios.post(`${SERVER_URL}/image/signed`,{ key });
         const {signedUrl} = response.data;
         return signedUrl;
 
