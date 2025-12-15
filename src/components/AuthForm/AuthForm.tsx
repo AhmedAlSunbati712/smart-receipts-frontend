@@ -29,20 +29,44 @@ const AuthForm = () => {
                 </h1>
             </div>
             <div className="w-80 h-[3px] rounded-md bg-lightgrey mt-2"></div>
-            <div className="w-90 mt-7">
+            {login_chosen && (
+                <>
+                <div className="w-90 mt-7">
                 <TextInput label="Email" name="email" className="mt-5"/>
-            </div>
-            <div className="w-90 mt-8">
-                <TextInput label="Password" name="password" type="password" className="mt-8"/>
-            </div>
-            <div className="mt-5">
-                <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md mt-7" variant="default">
-                    Log in
-                </Button>
-            </div>
-
-            
-            
+                </div>
+                <div className="w-90 mt-8">
+                    <TextInput label="Password" name="password" type="password" className="mt-8"/>
+                </div>
+                <div className="mt-5">
+                    <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md mt-7" variant="default">
+                        Log in
+                    </Button>
+                </div>
+                </>
+            )}
+            { signup_chosen && (
+                <>
+                <div className="w-85 flex flex-row gap-3 mt-7">
+                    <div>
+                        <TextInput label="First Name" name="firstName" className="mt-5"/>
+                    </div>
+                    <div>
+                        <TextInput label="Last Name" name="lastName" className="mt-5"/>
+                    </div>
+                </div>
+                <div className="w-85 mt-7">
+                    <TextInput label="Email" name="email"/>
+                </div>
+                <div className="w-85 mt-7">
+                    <TextInput label="Password" name="password" type="password"/>
+                </div>
+                <div className="mt-7">
+                    <Button className="bg-teal text-white hover:bg-darkteal w-25 h-12 font-bold text-md" variant="default">
+                        Sign Up
+                    </Button>
+                </div>
+                </>
+            )}
         </div>
     )
 }
