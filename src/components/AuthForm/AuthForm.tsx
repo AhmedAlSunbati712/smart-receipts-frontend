@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { TextInput } from "./TextInput";
 import AuthChoice from "./AuthChoice";
-import { Button } from "@/components/ui/button";
-import { signup, login } from "@/api/user";
+import { Button } from "../ui/button";
+import { signup, login } from "../../api/user";
 import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
