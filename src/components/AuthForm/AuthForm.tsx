@@ -47,6 +47,8 @@ const AuthForm = () => {
         try {
             const data = await signup(signupData);
             toast.success("Signup succesful!");
+            set_login_choice(true);
+            set_signup_choice(false);
         } catch (error) {
             console.error(error);
             toast.error("Failed to sign up!");
