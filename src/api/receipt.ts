@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { SERVER_URL } from '../utils/constants';
-import { GetReceipt, CreateReceipt, UpdateReceipt } from '../types/receipt';
+import type { GetReceipt, CreateReceipt, UpdateReceipt } from '../types/receipt';
 import axios from "axios";
 
 export const RECEIPT_KEY = 'receipts';
