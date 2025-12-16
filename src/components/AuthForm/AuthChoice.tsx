@@ -1,3 +1,4 @@
+import React from 'react'
 type AuthChoiceProps = {
     text: string;
     chosen: boolean;

@@ -9,6 +9,8 @@
   font-display: swap;
   src: url('/fonts/Inter.woff2') format('woff2');
 }
+
+
 /* 
 /* ---break--- */
 @custom-variant dark (&:is(.dark *));
@@ -158,3 +160,4 @@
     @apply bg-background text-foreground;
   }
 } */
+

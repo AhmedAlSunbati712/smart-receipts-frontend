@@ -3,6 +3,9 @@ import { TextInput } from "./TextInput";
 import AuthChoice from "./AuthChoice";
 import { Button } from "@/components/ui/button";
 import { signup, login } from "@/api/user";
+import React from 'react'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AuthForm = () => {
     const [login_chosen, set_login_choice] = useState(true);
@@ -33,18 +36,20 @@ const AuthForm = () => {
         e.preventDefault();
         try {
             const data = await login(loginData);
-            console.log(data);
+            toast.success(`Welcome ${data.firstName}!`);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to log in!");
         }
     }
     const onSubmitSignup = async (e: any) => {
         e.preventDefault();
         try {
             const data = await signup(signupData);
-            console.log(data);
+            toast.success("Signup succesful!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to sign up!");
         }
     }
     
