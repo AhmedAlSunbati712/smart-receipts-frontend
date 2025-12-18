@@ -11,6 +11,7 @@ export const getPresignedUrl = async (data: {
         return {uploadUrl, key};
     } catch (error) {
         console.error(error);
+        throw error;
     }
 }
 
