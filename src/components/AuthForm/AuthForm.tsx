@@ -56,7 +56,7 @@ const AuthForm = () => {
     }
     
     return (
-        <div className="w-115 h-142 bg-white shadow-lg p-3 flex flex-col items-center rounded-lg border border-3 border-teal">
+        <div className="w-110 h-142 bg-white shadow-lg p-3 flex flex-col items-center rounded-lg border border-3 border-teal">
             <div className="flex mt-6">
                 <AuthChoice text="Log in" chosen={login_chosen} alignement="left" onClickAct={onClickLogin} />
                 <AuthChoice text="Sign up" chosen={signup_chosen} alignement="right" onClickAct={onClickSignup}/>
