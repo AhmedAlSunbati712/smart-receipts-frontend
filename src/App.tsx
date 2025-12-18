@@ -27,7 +27,7 @@ function App() {
     <AuthForm />
   </div> */}
   <div className="flex w-full h-screen items-center justify-center bg-lightgrey">
-    <AuthForm />
+    {/* <AuthForm /> */}
     <div className="w-100">
       <NewReceiptModal />
     </div>

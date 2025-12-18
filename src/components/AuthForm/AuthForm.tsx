@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextInput } from "./TextInput";
+import { TextInput } from "../common/TextInput";
 import AuthChoice from "./AuthChoice";
 import { Button } from "../ui/button";
 import { signup, login } from "../../api/user";

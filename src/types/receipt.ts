@@ -15,6 +15,20 @@ export type Category =
   | "GIFTS"
   | "OTHER";
 
+export interface ReceiptItem {
+    name: string;
+    price: number;
+    quantity: number;
+}
+
+export interface ReceiptData {
+    vendor: string;
+    total: number;
+    category: Category;
+    date: string;
+    items: ReceiptItem[];
+}
+
 export interface GetReceipt {
     vendor?: string;
     total?: number;
