@@ -44,6 +44,7 @@ export interface CreateReceipt {
     date: string | Date;
     rawText?: string | null | undefined;
     imageUrl?: string | null | undefined;
+    items?: ReceiptItem[];
 }
 
 export interface UpdateReceipt {

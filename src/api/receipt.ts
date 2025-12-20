@@ -3,6 +3,8 @@ import { SERVER_URL } from '../utils/constants';
 import type { GetReceipt, CreateReceipt, UpdateReceipt } from '../types/receipt';
 import axios from "axios";
 import { format } from "date-fns";
+import { toast } from 'react-toastify';
+
 
 export const RECEIPT_KEY = 'receipts';
 
@@ -42,8 +44,9 @@ export const createReceipt = (onSuccess?: () => void) => {
           return response.data;
         },
         onError: (error) => {
-            console.error(error);
-            throw error;
+          toast.error("Failed to save receipt data!")
+          console.error(error);
+          throw error;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: [RECEIPT_KEY]});

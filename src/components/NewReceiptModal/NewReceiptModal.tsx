@@ -4,11 +4,13 @@ import { getPresignedUrl, getViewUrl, uploadToS3 } from "@/api/image";
 import { toast } from 'react-toastify';
 import UploadReceipt from "../UploadReceipt/UploadReceipt";
 import { processReceipt, getJobResult, getJobStatus } from "@/api/ocr";
-import type { ReceiptData, Category } from "@/types/receipt";
+import type { ReceiptData, Category, CreateReceipt } from "@/types/receipt";
 import { NewReceipt } from "./NewReceipt";
 import Spinner from "./Spinner";
 import { sleep } from "@/utils/sleep";
 import { extractInfo } from "@/api/gpt";
+import { createReceipt } from "@/api/receipt";
+import { format } from "date-fns";
 
 const NewReceiptModal = () => {
     const [selected, setselected] = useState(false);
@@ -20,7 +22,6 @@ const NewReceiptModal = () => {
     const [ocrJobId, setJobId] = useState<string>("");
     const [datePickerOpen, setOpen] = useState(false);
     const [receiptText, setReceiptText] = useState<string | undefined>(undefined);
-
     const [receiptData, setReceiptData] = useState<ReceiptData>(
         {
         vendor: "",
@@ -41,10 +42,34 @@ const NewReceiptModal = () => {
         ],
     });
 
+    const { mutate, isPending, isError } = createReceipt(() => {
+        toast.success("Successfully saved the receipt!");
+        setUploaded(false);
+        setReceiptStatus(false);
+    });
     const setCategory = (v: Category) => {
         setReceiptData({...receiptData, category: v});
     } 
     
+    const onSaveClick = () => {
+        if (!receiptData.category) {
+            toast.error("Please select a category");
+            return;
+        }
+        if (!receiptData.date) {
+            toast.error("Please select a date");
+            return;
+        }
+
+        const data: CreateReceipt = {
+            ...receiptData,
+            date: receiptData.date!,
+            category: receiptData.category,
+            rawText: receiptText,
+        };
+
+        mutate(data);
+    };
     const pollJobStatus = async (jobId: string) => {
         const MAX_RETRIES = 30;
         const POLL_INTERVAL = 2000;
@@ -157,6 +182,7 @@ const NewReceiptModal = () => {
             datePickerOpen={datePickerOpen}
             setOpen={setOpen}
             clickAdd={clickAdd}
+            onClickSave={onSaveClick}
         />
         )}
     </div> 

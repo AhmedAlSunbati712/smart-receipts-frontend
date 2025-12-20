@@ -15,6 +15,7 @@ export const NewReceipt = ({
     datePickerOpen,
     setOpen,
     clickAdd,
+    onClickSave,
     }: any) => {
     return (
         <>
@@ -92,7 +93,7 @@ export const NewReceipt = ({
                 </div>
             )
         )}
-        <Button className={`bg-teal hover:bg-darkteal text-[16px] mt-3`} variant="default">Save</Button>
+        <Button className={`bg-teal hover:bg-darkteal text-[16px] mt-3`} variant="default" onClick={onClickSave}>Save</Button>
         </>
     )
 }
