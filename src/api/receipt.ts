@@ -2,6 +2,7 @@ import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { SERVER_URL } from '../utils/constants';
 import type { GetReceipt, CreateReceipt, UpdateReceipt } from '../types/receipt';
 import axios from "axios";
+import { format } from "date-fns";
 
 export const RECEIPT_KEY = 'receipts';
 
@@ -36,8 +37,9 @@ export const createReceipt = (onSuccess?: () => void) => {
 
     return useMutation({
         mutationFn: async (receiptData: CreateReceipt) => {
-            const response = await axios.post(`${SERVER_URL}/receipt`, receiptData);
-            return response.data;
+          receiptData.date = format(receiptData.date, "yyyy-MM-dd")
+          const response = await axios.post(`${SERVER_URL}/receipt`, receiptData);
+          return response.data;
         },
         onError: (error) => {
             console.error(error);
@@ -55,8 +57,11 @@ export const updateReceipt = (onSuccess?: () => void) => {
 
     return useMutation({
         mutationFn: async ({ receiptId, data }: { receiptId: string; data: UpdateReceipt }) => {
-            const response = await axios.put(`${SERVER_URL}/receipt/${receiptId}`, data);
-            return response.data;
+          if (data.date) {
+            data.date = format(data.date, "yyyy-MM-dd");
+          } 
+          const response = await axios.put(`${SERVER_URL}/receipt/${receiptId}`, data);
+          return response.data;
         },
         onError: (error) => {
             console.error(error);

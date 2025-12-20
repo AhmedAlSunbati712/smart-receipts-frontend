@@ -24,8 +24,8 @@ export interface ReceiptItem {
 export interface ReceiptData {
     vendor: string;
     total: number;
-    category: Category;
-    date: string;
+    category: Category | undefined;
+    date: Date | undefined;
     items: ReceiptItem[];
 }
 
@@ -50,7 +50,7 @@ export interface UpdateReceipt {
     vendor?: string;
     category?: Category;
     total?: number;
-    date?: Date;
+    date?: Date | string;
     rawText?: string | null;
     imageUrl?: string | null;
     

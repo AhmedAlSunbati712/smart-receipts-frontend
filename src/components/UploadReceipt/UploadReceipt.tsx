@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "../ui/button";
 
 
-const UploadReceipt = ({selected, previewUrl, selectedFile, handleFileSelection, onClickSubmit}: any) => {
+const UploadReceipt = ({selected, previewUrl, selectedFile, handleFileSelection, onClickSubmit, className=""}: any) => {
     return (
         <>
-            <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border-darkteal border-dashed border-default-strong border-2 rounded-base cursor-pointer hover:bg-neutral-tertiary-medium rounded-md">
+            <label htmlFor="dropzone-file" className={`flex flex-col items-center justify-center w-full h-64 bg-neutral-secondary-medium border-darkteal border-dashed border-default-strong border-2 rounded-base cursor-pointer hover:bg-neutral-tertiary-medium rounded-md ${className}`}>
                 <div className="flex flex-col items-center justify-center text-body pt-5 pb-6">
                     <div className={`w-[100px] h-[115px] rounded-md border-2 border-darkteal ${selected ? "block" : "hidden"}`}>
                         <img className="w-full h-full object-cover" src={previewUrl} />
@@ -17,7 +17,7 @@ const UploadReceipt = ({selected, previewUrl, selectedFile, handleFileSelection,
                 </div>
                 <input id="dropzone-file" type="file" className="hidden" onChange={handleFileSelection} />
             </label>
-            <Button className="bg-teal hover:bg-darkteal mt-3" variant="default" onClick={onClickSubmit}> Upload </Button>
+            <Button className={`bg-teal hover:bg-darkteal mt-3 ${className}`} variant="default" onClick={onClickSubmit}> Upload </Button>
         </>
     
     )

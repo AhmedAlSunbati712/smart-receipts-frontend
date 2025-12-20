@@ -3,26 +3,30 @@ import { useState } from "react";
 import { getPresignedUrl, getViewUrl, uploadToS3 } from "@/api/image";
 import { toast } from 'react-toastify';
 import UploadReceipt from "../UploadReceipt/UploadReceipt";
+import { processReceipt, getJobResult, getJobStatus } from "@/api/ocr";
+import type { ReceiptData, Category } from "@/types/receipt";
+import { NewReceipt } from "./NewReceipt";
+import Spinner from "./Spinner";
+import { sleep } from "@/utils/sleep";
 import { extractInfo } from "@/api/gpt";
-import { processReceipt } from "@/api/ocr";
-import type { ReceiptData } from "@/types/receipt";
-import { TextInput } from "../common/TextInput";
-import { FaPlus } from "react-icons/fa6";
-import { Button } from "../ui/button";
 
 const NewReceiptModal = () => {
     const [selected, setselected] = useState(false);
+    const [uploaded, setUploaded] = useState(false);
     const [receiptKey, setKey] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
-    const [spinnerState, setSpinnerState] = useState<boolean>(true);
-    const [ocrJobId, setJobId] = useState<number>(-1);
+    const [receiptReady, setReceiptStatus] = useState<boolean>(false);
+    const [ocrJobId, setJobId] = useState<string>("");
+    const [datePickerOpen, setOpen] = useState(false);
+    const [receiptText, setReceiptText] = useState<string | undefined>(undefined);
+
     const [receiptData, setReceiptData] = useState<ReceiptData>(
         {
         vendor: "",
-        category: "OTHER",
+        category: undefined,
         total: 0,
-        date: "",
+        date: undefined,
         items: [
             {
                 name: "",
@@ -36,7 +40,29 @@ const NewReceiptModal = () => {
             }
         ],
     });
+
+    const setCategory = (v: Category) => {
+        setReceiptData({...receiptData, category: v});
+    } 
     
+    const pollJobStatus = async (jobId: string) => {
+        const MAX_RETRIES = 30;
+        const POLL_INTERVAL = 2000;
+        for (let attempt = 0; attempt < MAX_RETRIES; attempt += 1) {
+            const jobStatus = await getJobStatus(jobId);
+            if (jobStatus.status == "completed") {
+                return;
+            }
+
+            if (jobStatus.status == "failed") {
+                throw new Error("OCR job failed");
+            }
+
+            await sleep(POLL_INTERVAL);
+        }
+
+        throw new Error("OCR job timedout!");
+    }
 
     const handleFileSelection = (e: any) => {
         const file = e.target.files[0];
@@ -46,35 +72,57 @@ const NewReceiptModal = () => {
         setselected(true);
     }
 
-    const addProcessingJob = async (imageUrl: string) => {
+    const processingJob = async (imageUrl: string) => {
         try {
-            const data = await processReceipt({imageUrl});
+            const data = await processReceipt({ imageUrl });
             const {status, jobId} = data;
-            if (status == "success") {
-                setJobId(jobId);
-                toast.success("Image being processed");
+            setJobId(jobId.id);
 
-            }
+            // Now need to poll
+            await pollJobStatus(jobId.id);
+            
+            // Request the raw text of the image
+            const resData = await getJobResult(jobId.id);
+            setReceiptText(resData.text);
+
+
+            // Now ask chatgpt to extract data in a structured way
+            const receiptData = await extractInfo(resData.text);
+            setReceiptData(receiptData);
+
         } catch (error) {
             console.error(error);
             toast.error("Failed to process receipt image!");
         }
     }
 
+
     const onUploadClick = async () => {
         try {
+            // Get a presigned s3 url to upload to s3
             const response_data = await getPresignedUrl({fileName: selectedFile?.name!, contentType: selectedFile?.type!});
             if (!response_data) return;
             const {uploadUrl, key} = response_data;
             setKey(key);
+            
+            // upload to s3
             await uploadToS3(uploadUrl, selectedFile!, selectedFile!.type);
             toast.success("Succesfully uploaded your receipt!")
             const viewUrl = await getViewUrl(key);
-            setPreviewUrl(viewUrl);
-
+            
+            // Adjust state properly
+            setPreviewUrl(viewUrl); // To view the receipt image from the s3 bucket instead
+            setUploaded(true); // To move on to the next stage and start loading
+            
+            // The real work happening here: Sends the image to the backend to extract text
+            // and to extract structured info for display
+            await processingJob(viewUrl);
+            toast.success("Successfully processed receipt!");
+            setReceiptStatus(true);
         } catch(error) {
             console.error(error);
             toast.error("Failed to upload image!");
+            setUploaded(false);
         }
     }
 
@@ -89,79 +137,28 @@ const NewReceiptModal = () => {
     }
     return (
 
-    <div className="flex bg-white p-5 rounded-md items-center justify-center w-full flex flex-col shadow-md border border-3 border-darkteal">
-        {/*<UploadReceipt selected={selected} previewUrl={previewUrl} selectedFile={selectedFile} handleFileSelection={handleFileSelection} onClickSubmit={onUploadClick} /> */}
-        <div className="w-full items-center flex gap-2 mb-4">
-            <div className={`w-[85px] h-[85px] rounded-md border-2 border-darkteal shadow-lg`}>
-                <img className="w-full h-full object-cover" src={previewUrl} />        
-            </div>
-                <p>{selectedFile?.name || "No image selected"}</p>
-        </div>
-        <div className="w-full flex flex-col">
-            <div className="w-full flex">
-                <span className="text-darkgrey font-bold text-[18px] mr-auto">General Info</span>
-                <span className="font-bold border border-1 border-darkteal rounded-md px-2">Total: ${receiptData.total}</span>
-            </div>
-            <span className="w-30 border border-2 border-lightgrey rounded-md"></span>
-            <TextInput label="Vendor" value={receiptData.vendor} type="text" name="vendor" className="mt-2" onChange={(e) => setReceiptData({...receiptData, vendor: e.target.value})}/>
-            <TextInput label="Date" value={receiptData.date} type="text" name="date" className="mt-2" onChange={(e) => setReceiptData({...receiptData, date: e.target.value})}/>
-        </div>
-        <div className="w-full align-left flex flex-col mt-2">
-            <div className="w-30 flex">
-            <span className="text-darkgrey font-bold text-[18px] mr-auto">Items</span>
-            <button onClick={clickAdd}><FaPlus className="font-bold text-2xl text-darkteal hover:cursor-pointer" /></button>
-            </div>
-            <span className="w-30 border border-2 border-lightgrey rounded-md"></span>
-        </div>
-        {receiptData.items && 
-            receiptData.items.map((item, index) => (
-                <div className="w-full flex gap-1 mt-2" key={index}>
-                    <div className="w-50">
-                        <TextInput label="Name" value={item.name} type="text" name="name" className="" onChange={(e) => {
-                            const newItems = [...receiptData.items];
-                            newItems[index] = {
-                                ...newItems[index],
-                                name: e.target.value,
-                            };
-
-                            setReceiptData({
-                                ...receiptData,
-                                items: newItems,
-                            });
-                        }} />
-                    </div>
-                    <div className="w-30">
-                    <TextInput label="Price" value={item.price <= 0 ? "" : String(item.price)} type="text" name="price" className="" onChange={(e) => {
-                        const newItems = [...receiptData.items];
-                        newItems[index] = {
-                            ...newItems[index],
-                            price: Number(e.target.value),
-                        };
-
-                        setReceiptData({
-                            ...receiptData,
-                            items: newItems,
-                        })
-                    }} />
-                    </div>
-                    <div className="w-20">
-                    <TextInput label="Qty" value={item.quantity <= 0 ? "" : String(item.quantity)} type="text" name="quantity" className="" onChange={(e) => {
-                        const newItems = [...receiptData.items];
-                        newItems[index] = {
-                            ...newItems[index],
-                            quantity: Number(e.target.value),
-                        };
-
-                        setReceiptData({
-                            ...receiptData,
-                            items: newItems,
-                        })
-                    }} />
-                    </div>
-                </div>
-            )
+    <div className="min-h-[400px] flex bg-white p-5 rounded-md items-center justify-center w-full flex flex-col shadow-md border border-3 border-darkteal">
+        { !uploaded && (
+            <UploadReceipt selected={selected} previewUrl={previewUrl} selectedFile={selectedFile} handleFileSelection={handleFileSelection} onClickSubmit={onUploadClick}/>
         )}
-        <Button className="bg-teal hover:bg-darkteal text-[16px] mt-3" variant="default">Save</Button>
+
+        {(uploaded && !receiptReady) && (
+            <div className="flex flex-1 items-center justify-center">
+                <Spinner />
+            </div>
+        )}
+        {(receiptReady && uploaded) && (
+        <NewReceipt 
+            selectedFile={selectedFile}
+            previewUrl={previewUrl}
+            receiptData={receiptData}
+            setCategory={setCategory}
+            setReceiptData={setReceiptData}
+            datePickerOpen={datePickerOpen}
+            setOpen={setOpen}
+            clickAdd={clickAdd}
+        />
+        )}
     </div> 
 
     )
