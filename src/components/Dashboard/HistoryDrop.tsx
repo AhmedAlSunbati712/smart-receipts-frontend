@@ -23,15 +23,14 @@ const LABELS: Record<string, string> = {
 }
 
 type HistoryDropProps = {
-    value: string;
+    value: string | undefined;
     setValue: (value: string) => void,
 }
 export function HistoryDrop({value, setValue} : HistoryDropProps) {
-    if (!value) setValue("30d");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="absolute bottom-8 text-teal hover:text-teal" variant="outline">{LABELS[value]}</Button>
+        <Button className="absolute bottom-8 text-teal hover:text-teal" variant="outline">{LABELS[value!]}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40">
         <DropdownMenuRadioGroup value={value} onValueChange={setValue}>

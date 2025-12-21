@@ -45,7 +45,7 @@ export function CategoryPicker({ value, onChange }: CategoryPickerProps) {
       <DropdownMenuContent className="w-56">
         <DropdownMenuRadioGroup value={value} onValueChange={(v) => onChange(v as Category)}>
           <DropdownMenuRadioItem value="GROCERIES">Groceries</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="DINING">Dinging</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="DINING">Dining</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="ENTERTAINMENT">Entertainment</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="TRANSPORTATION">Transportation</DropdownMenuRadioItem>
           <DropdownMenuRadioItem value="RENT">Rent</DropdownMenuRadioItem>
