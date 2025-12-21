@@ -39,7 +39,9 @@ export const createReceipt = (onSuccess?: () => void) => {
 
     return useMutation({
         mutationFn: async (receiptData: CreateReceipt) => {
-          receiptData.date = format(receiptData.date, "yyyy-MM-dd")
+          receiptData.date = receiptData.date instanceof Date
+          ? receiptData.date.toISOString()
+          : receiptData.date;
           const response = await axios.post(`${SERVER_URL}/receipt`, receiptData);
           return response.data;
         },
