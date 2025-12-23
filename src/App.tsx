@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NavBar from './components/NavBar/NavBar';
 import NewReceiptModal from './components/NewReceiptModal/NewReceiptModal';
 import { HistoryDrop } from './components/Dashboard/HistoryDrop';
-import { getSpendingByCategory, getSpendingByVendor, getSpendingOverTime } from './api/analytics';
+import { getSpendingByCategory, getSpendingByVendor, getSpendingOverTime, getAnalytics } from './api/analytics';
 import { formatPieData, preprocessUpperCaseStrings, fillMissingDates } from './utils/dataProcessing';
 import PieChartWithLabels from './components/common/PieChartWithLabels';
 import { SpendingLineChart } from './components/common/SpendingLineChart';
@@ -14,42 +14,55 @@ import { SpendingLineChart } from './components/common/SpendingLineChart';
 
 function App() {
   const [value, setValue] = useState<string | undefined>("30d");
+  const {data: analytics, isLoading: isLoadingAnalytics, isError: isErrorAnalytics, isSuccess: isSuccessAnalytics} = getAnalytics("2025-12-01");
 
-  const {data: spendingOverTime, isLoading: isLoadingSpendingOverTime, isError: isErrorSpendingOverTime, isSuccess: isSuccessSpendingOverTime} = getSpendingOverTime();
-  const {data: spendingByCategory, isLoading:isLoadingSpendingByCategory, isError: isErrorSpendingByCategory, isSuccess: isSuccessSpendingByCateogory} = getSpendingByCategory();
-  const {data: spendingByVendor,  isLoading:isLoadingSpendingByVendor, isError: isErrorSpendingByVendor, isSuccess: isSuccessSpendingByVendor} = getSpendingByVendor();
+  
+  const spendingOverTime = analytics?.spendingOverTime ?? [];
+  const spendingByCategory = analytics?.categorySpending ?? [];
+  const spendingByVendor = analytics?.vendorSpending ?? [];
+  
 
 
   const normalizedData = useMemo(() => {
-    if (!spendingOverTime) return [];
-    return fillMissingDates(spendingOverTime, 'date', 'total');
+    if (!spendingOverTime.length) return [];
+    return fillMissingDates(spendingOverTime, "date", "total");
   }, [spendingOverTime]);
-
+  
   const formatted_by_category_pie = useMemo(() => {
-    if (!spendingByCategory) return [];
-    const formatted = formatPieData({ data: spendingByCategory, primaryKey: "category", sortKey: "total" });
-    return formatted.map(item => ({
+    if (!spendingByCategory.length) return [];
+    return formatPieData({
+      data: spendingByCategory,
+      primaryKey: "category",
+      sortKey: "total",
+    }).map(item => ({
       ...item,
-      category: preprocessUpperCaseStrings(item.category)
+      category: preprocessUpperCaseStrings(item.category),
     }));
   }, [spendingByCategory]);
-
+  
   const formatted_by_vendor_pie = useMemo(() => {
-    if (!spendingByVendor) return [];
-    return formatPieData({ data: spendingByVendor, primaryKey: "vendor", sortKey: "total" });
+    if (!spendingByVendor.length) return [];
+    return formatPieData({
+      data: spendingByVendor,
+      primaryKey: "vendor",
+      sortKey: "total",
+    });
   }, [spendingByVendor]);
+  
 
-
-
-    
-  if (isLoadingSpendingOverTime || isLoadingSpendingByCategory || isLoadingSpendingByVendor) {
-    return <div>Loading...</div>
+  if (isLoadingAnalytics) {
+    return <div>loading</div>
   }
-  if (isErrorSpendingOverTime || isErrorSpendingByCategory || isErrorSpendingByVendor) {
-    return <div>Error</div>
+  if (isErrorAnalytics) {
+    return <div>error</div>
   }
-  const totalSpent = spendingOverTime.reduce((accumulator: any, item: any) => accumulator + item.total, 0);
-  const formattedTotal = new Intl.NumberFormat('en-US', {
+
+
+  const totalSpent = spendingOverTime.reduce(
+    (acc: number, item: any) => acc + item.total,
+    0
+  );
+    const formattedTotal = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 0,
@@ -108,6 +121,7 @@ function App() {
         </div>
         </div>
       </div>
+  
   </>
   )
 }

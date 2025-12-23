@@ -4,6 +4,21 @@ import { useQueryClient, useQuery } from '@tanstack/react-query';
 import axios from "axios";
 const ANALYTICS_KEY = "analytics";
 
+
+export const getAnalytics = (startDate: string) => {
+    return (useQuery({
+        queryKey: [ANALYTICS_KEY, startDate],
+        queryFn: async () => {
+            try {
+                const response = await axios.get(`${SERVER_URL}/analytics?startDate=${startDate}`);
+                return response.data
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }));
+}
+
 export const getSpendingOverTime = () => {
     return (useQuery({
         queryKey: [RECEIPT_KEY, ANALYTICS_KEY, "TIME"],
