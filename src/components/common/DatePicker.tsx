@@ -15,9 +15,10 @@ interface DatePickerProps {
     date?: Date
     onOpenChange: (open: boolean) => void
     onSelect: (date?: Date) => void
+    placeHolder: string
 }
 
-export function DatePicker({open, date, onOpenChange, onSelect}: DatePickerProps) {
+export function DatePicker({open, date, onOpenChange, onSelect, placeHolder="Select date"}: DatePickerProps) {
   return (
     <div className="flex flex-col gap-1 mt-2 ">
       <Popover open={open} onOpenChange={onOpenChange}>
@@ -27,7 +28,7 @@ export function DatePicker({open, date, onOpenChange, onSelect}: DatePickerProps
             id="date"
             className="w-full h-15 justify-between font-normal border-darkgrey-300 border-2"
           >
-            {date ? date.toLocaleDateString() : "Select date"}
+            {date ? date.toLocaleDateString() : placeHolder}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>

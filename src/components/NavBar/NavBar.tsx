@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+type NavBarProps = {
+  active: "dashboard" | "category" | "vendor";
+  setActive: (value: "dashboard" | "category" | "vendor") => void;
+};
 
-const NavBar = ({acitve = "dashboard"}: any) => {
+const NavBar = ({ active = "dashboard", setActive }: NavBarProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,9 +36,9 @@ const NavBar = ({acitve = "dashboard"}: any) => {
           }`}
         >
           <ul className="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0">
-            <li className={`hover:bg-teal hover:text-white rounded-[8px] p-2 font-semibold text-[16px] ${acitve == "dashboard" ? "text-white font-bold bg-teal" : "text-teal"}`}><a href="#">Dashboard</a></li>
-            <li className={`hover:bg-teal hover:text-white rounded-[8px] p-2 font-semibold text-[16px] ${acitve == "category" ? "text-white font-bold bg-teal" : "text-teal"}`}><a href="#">Category Analytics</a></li>
-            <li className={`hover:bg-teal hover:text-white rounded-[8px] p-2 font-semibold text-[16px] ${acitve == "vendor" ? "text-white font-bold bg-teal" : "text-teal"}`}><a href="#">Vendor Analytics</a></li>
+            <li className={`hover:bg-teal hover:text-white rounded-[8px] p-2 font-semibold text-[16px] ${active == "dashboard" ? "text-white font-bold bg-teal" : "text-teal"}`}><button className="hover:cursor-pointer" onClick={() => setActive("dashboard")}>Dashboard</button></li>
+            <li className={`hover:bg-teal hover:text-white rounded-[8px] p-2 font-semibold text-[16px] ${active == "category" ? "text-white font-bold bg-teal" : "text-teal"}`}><button className="hover:cursor-pointer" onClick={() => setActive("category")}>Category Analytics</button></li>
+            <li className={`hover:bg-teal hover:text-white rounded-[8px] p-2 font-semibold text-[16px] ${active == "vendor" ? "text-white font-bold bg-teal" : "text-teal"}`}><button className="hover:cursor-pointer" onClick={() => setActive("vendor")}>Vendor Analytics</button></li>
           </ul>
         </div>
       </div>

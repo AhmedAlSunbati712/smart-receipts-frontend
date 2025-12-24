@@ -15,7 +15,7 @@ import {
     total: number;
   }
   
-  export const SpendingLineChart = ({ data }: { data: SpendingData[] }) => {
+  export const SpendingLineChart = ({ data }: { data: {date: string, total:number}[] }) => {
     const formatCurrency = (value: number) => 
       new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
   

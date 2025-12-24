@@ -10,7 +10,6 @@
   src: url('/fonts/Inter.woff2') format('woff2');
 }
 
-
 /* 
 /* ---break--- */
 @custom-variant dark (&:is(.dark *));

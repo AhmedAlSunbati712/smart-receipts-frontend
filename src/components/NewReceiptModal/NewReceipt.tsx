@@ -36,7 +36,7 @@ export const NewReceipt = ({
             <DatePicker open={datePickerOpen} date={receiptData.date} onOpenChange={() => setOpen(!datePickerOpen)} onSelect={(date) => {
                 setReceiptData({...receiptData, date: date});
                 setOpen(false);
-            }}/>
+            }} placeHolder="Select Date"/>
         </div>
         <div className={`w-full align-left flex flex-col mt-2 `}>
             <div className="w-30 flex">
