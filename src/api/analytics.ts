@@ -22,7 +22,7 @@ export const getAnalytics = (startDate: string) => {
     }));
 }
 
-export  const getCategoryAnalytics = (startDate: Date, endDate:  Date) => {
+export const getCategoryAnalytics = (startDate: Date, endDate:  Date) => {
     return (useQuery({
         queryKey: ["CATEGORY", startDate, endDate],
         queryFn: async () => {
@@ -33,6 +33,24 @@ export  const getCategoryAnalytics = (startDate: Date, endDate:  Date) => {
                 return response.data;
                 
             } catch(error) {
+                console.error(error);
+                throw error;
+            }
+        },
+        enabled: !!startDate && !!endDate
+    }))
+}
+
+export const getVendorAnalytics = (startDate: Date, endDate: Date) => {
+    return (useQuery({
+        queryKey: ["VENDOR", startDate, endDate],
+        queryFn: async () => {
+            try {
+                const startDateStr = format(startDate, "yyyy-MM-dd");
+                const endDateStr = format(endDate, "yyyy-MM-dd");
+                const response = await axios.get(`${SERVER_URL}/analytics/vendor?startDate=${startDateStr}&endDate=${endDateStr}`);
+                return response.data;
+            } catch (error) {
                 console.error(error);
                 throw error;
             }

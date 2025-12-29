@@ -3,6 +3,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import { ToastContainer } from "react-toastify";
 import Dashboard from "../Dashboard/Dashboard";
 import CategoryAnal from "../CategoryAnal/CategoryAnal";
+import VendorAnal from "../VendorAnal/VendorAnal"
 
 const Main = () => {
     const [active, setActive] = useState<"dashboard" | "category" | "vendor">("dashboard");
@@ -20,7 +21,13 @@ const Main = () => {
       <NavBar active={active} setActive={setActive}/>
       <div className="flex flex-col w-full min-h-screen items-center justify-center bg-white">
         {active == "dashboard" && (
-            <CategoryAnal />
+            <Dashboard />
+        )}
+        {active == "category" &&(
+          <CategoryAnal />
+        )}
+        {active == "vendor" && (
+          <VendorAnal />
         )}
       </div>
       </>
