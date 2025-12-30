@@ -12,7 +12,7 @@ import { extractInfo } from "@/api/gpt";
 import { createReceipt } from "@/api/receipt";
 import { format } from "date-fns";
 
-const NewReceiptModal = () => {
+const NewReceiptModal = ({ onClose }: { onClose: () => void }) => {
     const [selected, setselected] = useState(false);
     const [uploaded, setUploaded] = useState(false);
     const [receiptKey, setKey] = useState<string | null>(null);
@@ -162,7 +162,8 @@ const NewReceiptModal = () => {
     }
     return (
 
-    <div className="min-h-[400px] flex bg-white p-5 rounded-md items-center justify-center w-full flex flex-col shadow-md border border-3 border-darkteal">
+    <div className="relative min-h-[400px] flex bg-white p-5 rounded-md items-center justify-center w-full flex flex-col shadow-md border border-3 border-darkteal">
+          <button onClick={onClose} className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl">✕</button>
         { !uploaded && (
             <UploadReceipt selected={selected} previewUrl={previewUrl} selectedFile={selectedFile} handleFileSelection={handleFileSelection} onClickSubmit={onUploadClick}/>
         )}

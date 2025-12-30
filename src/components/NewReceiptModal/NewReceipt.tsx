@@ -65,13 +65,15 @@ export const NewReceipt = ({
                     <div className="w-30">
                     <TextInput label="Price" value={item.price <= 0 ? "" : String(item.price)} type="text" name="price" className="" onChange={(e) => {
                         const newItems = [...receiptData.items];
+                        
                         newItems[index] = {
                             ...newItems[index],
                             price: Number(e.target.value),
                         };
-
+                        const newTotal = newItems.reduce((acc, item) => acc + (item.price > 0 ? item.price : 0), 0);
                         setReceiptData({
                             ...receiptData,
+                            total: newTotal,
                             items: newItems,
                         })
                     }} />

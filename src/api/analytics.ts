@@ -4,7 +4,7 @@ import { useQueryClient, useQuery } from '@tanstack/react-query';
 import axios from "axios";
 import { format } from "date-fns";
 
-const ANALYTICS_KEY = "analytics";
+const ANALYTICS_KEY = "ANALYTICS";
 
 
 export const getAnalytics = (startDate: string) => {

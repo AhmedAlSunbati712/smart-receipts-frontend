@@ -52,6 +52,17 @@ export const createReceipt = (onSuccess?: () => void) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: [RECEIPT_KEY]});
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "ANALYTICS"
+            });
+            
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "CATEGORY"
+            });
+            
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "VENDOR"
+            });
             if (onSuccess) onSuccess();
         }
     })
@@ -74,6 +85,17 @@ export const updateReceipt = (onSuccess?: () => void) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: [RECEIPT_KEY]});
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "ANALYTICS"
+            });
+            
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "CATEGORY"
+            });
+            
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "VENDOR"
+            });
             if (onSuccess) onSuccess();
         }
     })
@@ -93,6 +115,17 @@ export const deleteReceipt = (onSuccess?: () => void) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: [RECEIPT_KEY]});
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "ANALYTICS"
+            });
+            
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "CATEGORY"
+            });
+            
+            queryClient.invalidateQueries({
+              predicate: (query) => query.queryKey[0] === "VENDOR"
+            });
             if (onSuccess) onSuccess();
         }
     })

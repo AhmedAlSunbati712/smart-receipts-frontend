@@ -80,32 +80,36 @@ const Dashboard = () => {
                 <div className="flex w-[571px] h-[164px] bg-white rounded-md border-3 border-darkteal shadow-xl">
                     <div className="relative w-[190px] flex flex-col items-center border-r-3 border-darkteal justify-center">
                     <span className="absolute top-4 text-teal font-bold text-[20px]">Total spent</span>
-                    <span className="font-bold text-[30px]">{formattedTotal}</span>
+                    <span className="font-bold text-[30px] text-teal">{formattedTotal}</span>
                     </div>
                     <div className="relative w-[190px] flex flex-col items-center border-r-3 border-darkteal justify-center">
                     <span className="absolute top-4 text-teal font-bold text-[20px]">Receipts</span>
-                    <span className="font-bold text-[30px]">24</span>
+                    <span className="font-bold text-[30px] text-teal">{analytics.numReceipts}</span>
                     </div>
                     <div className="relative w-[190px] flex flex-col items-center justify-center">
-                    <span className="absolute top-4 text-teal font-bold text-[20px]">Top Category</span>
-                    <span className="font-bold text-[30px]">{formatted_by_category_pie[0] ? formatted_by_category_pie[0].category : ""}</span>
+                        <span className="absolute top-4 text-teal font-bold text-[20px]">Top Category</span>
+                        <span className="font-bold text-[30px] text-teal">{formatted_by_category_pie[0] ? formatted_by_category_pie[0].category : ""}</span>
                     </div>
                 </div>
                 </div>
-                <div className="flex w-full items-center justify-center max-w-[40%] h-[400px] border border-3 border-darkteal mt-8 rounded-md shadow-xl">
-                <SpendingLineChart data={normalizedData} />
-                </div>
-                <div className="flex w-full items-center justify-between max-w-[65%] h-[290px]">
-                <div className='relative flex items-center justify-center w-[450px] h-[290px] border border-3 border-darkteal mt-8 rounded-md shadow-xl'>
-                <span className="absolute top-4 text-teal font-bold text-[20px]">Top Categories</span>
-                    <PieChartWithLabels chartData={formatted_by_category_pie} primaryKey='category' />
-                </div>
-                <div className='relative flex items-center justify-center w-[450px] h-[290px] border border-3 border-darkteal mt-8 rounded-md shadow-xl'>
-                <span className="absolute top-4 text-teal font-bold text-[20px]">Top Vendors</span>
-                <PieChartWithLabels chartData={formatted_by_vendor_pie} primaryKey='vendor' />
+                {analytics.numReceipts > 0 ? (
+                    <>
+                        <div className="flex w-full items-center justify-center max-w-[40%] h-[400px] border border-3 border-darkteal mt-8 rounded-md shadow-xl">
+                            <SpendingLineChart data={normalizedData} />
+                        </div>
+                        <div className="flex w-full items-center justify-between max-w-[65%] h-[290px]">
+                            <div className='relative flex items-center justify-center w-[450px] h-[290px] border border-3 border-darkteal mt-8 rounded-md shadow-xl'>
+                                <span className="absolute top-4 text-teal font-bold text-[20px]">Top Categories</span>
+                                    <PieChartWithLabels chartData={formatted_by_category_pie} primaryKey='category' />
+                            </div>
+                            <div className='relative flex items-center justify-center w-[450px] h-[290px] border border-3 border-darkteal mt-8 rounded-md shadow-xl'>
+                                <span className="absolute top-4 text-teal font-bold text-[20px]">Top Vendors</span>
+                                <PieChartWithLabels chartData={formatted_by_vendor_pie} primaryKey='vendor' />
+                            </div>
+                        </div>
+                    </>
+                ) : (<></>)}
 
-                </div>
-                </div>
             </div>
         </>
     )

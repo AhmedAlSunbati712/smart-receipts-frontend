@@ -7,7 +7,7 @@ import React from 'react'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const AuthForm = () => {
+const AuthForm = ({setAuthenticated}: any) => {
     const [login_chosen, set_login_choice] = useState(true);
     const [signup_chosen, set_signup_choice] = useState(false);
     const [loginData, set_loginData] = useState({
@@ -37,6 +37,7 @@ const AuthForm = () => {
         try {
             const data = await login(loginData);
             toast.success(`Welcome ${data.firstName}!`);
+            setAuthenticated(true);
         } catch (error) {
             console.error(error);
             toast.error("Failed to log in!");
